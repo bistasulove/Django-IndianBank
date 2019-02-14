@@ -2,13 +2,13 @@ from rest_framework import serializers
 from . import models
 
 
-class BanksSerializer(serializers.HyperlinkedModelSerializer):
+class BanksSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Banks
-        fields = ('id','url', 'name')
+        fields = ('id' , 'name')
 
 
 class BranchesSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Branches
-        fields = ('url','ifsc', 'bank', 'branch', 'address', 'city', 'district', 'state')
+        fields = ('ifsc', 'bank', 'branch', 'address', 'city', 'district', 'state')

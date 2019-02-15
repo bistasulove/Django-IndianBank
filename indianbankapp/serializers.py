@@ -9,6 +9,7 @@ class BanksSerializer(serializers.ModelSerializer):
 
 
 class BranchesSerializer(serializers.ModelSerializer):
+    bank = BanksSerializer(read_only=True)
     class Meta:
         model = models.Branches
         fields = ('ifsc', 'bank', 'branch', 'address', 'city', 'district', 'state')

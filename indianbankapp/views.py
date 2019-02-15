@@ -1,11 +1,8 @@
-from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.status import *
+from rest_framework import status
 
-import json
 from .models import Banks, Branches
 from .serializers import BanksSerializer, BranchesSerializer
 
@@ -18,43 +15,30 @@ def apphome(request):
     return render(request, "indianbankapp/index.html", context)
 
 
-class BranchView(APIView):
+class BranchIfscView(APIView):
 
     def get(self, request, ifsc_code):
 
-        """ GET - get details of a brank branch by IFSC code"""
-
-        response_dict = {}
-
-        branch = Branches.objects.filter(ifsc=ifsc_code).first()
+        """ Finds the Bank's branch by IFSC code"""
+        branch = Branches.objects.filter(ifsc=ifsc_code.upper()).first()
         if branch is None:
-            response_dict["message"] = "no branch with this ifsc code found"
-            return Response(response_dict, status=HTTP_404_NOT_FOUND)
+            return Response({'error_message':"Sorry. No Branch with such IFSC code exists."}, status=status.HTTP_404_NOT_FOUND)
+        serializer = BranchesSerializer(branch).data
+        return Response(serializer)
 
-        branch_serialized = BranchesSerializer(branch).data
-        return Response(branch_serialized)
-
-
-class BranchListView(APIView):
+class BranchCityView(APIView):
 
     def get(self, request):
 
-        """ GET - get all branches of a BANK in a CITY """
-
-        response_dict = {}
+        """ Finds all the branches of a Bank in a given City """
         city = request.GET.get("city", None)
         bank_name = request.GET.get("bank_name", None)
 
         bank = Banks.objects.filter(name=bank_name.upper()).first()
         if bank is None:
-            response_dict["message"] = "Bank with given bank_name does not exist"
-            return Response(response_dict, status=HTTP_422_UNPROCESSABLE_ENTITY)
-
-        branches = Branches.objects.filter(city=city.upper(), bank=bank)
-
+            return Response({'error_message':"{} doesn't exists!".format(bank_name.upper())}, status=status.HTTP_404_NOT_FOUND)
+        branches = Branches.objects.filter(city=city.upper(), bank=bank_name.upper())
         if len(branches) < 1:
-            response_dict["message"] = "no branch of {} exists in {}".format(bank_name, city)
-            return Response(response_dict, status=HTTP_404_NOT_FOUND)
-
-        branches_serialized = BranchesSerializer(branches, many=True).data
-        return Response(branches_serialized)
+            return Response({'error_message':"There are no branches of {} in {}.".format(bank_name,city)}, status=status.HTTP_404_NOT_FOUND)
+        serializer = BranchesSerializer(branches, many=True).data
+        return Response(serializer)

@@ -78,11 +78,11 @@ WSGI_APPLICATION = 'indianbanks.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'mkfvvhku',
-        'USER': 'mkfvvhku',
-        'PASSWORD': 'wvh7BwdM8cWTD_grOTQjVNBcbJiB3p7h',
-        'HOST': 'baasu.db.elephantsql.com',
-        'PORT': '5432'
+        'NAME': 'mydb',
+        'USER': 'postgres',
+        'PASSWORD': 'Password1',
+        'HOST': '127.0.0.1',
+        'PORT': '2079'
     }
 }
 

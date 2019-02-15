@@ -1,87 +1,76 @@
 {% extends "indianbankapp/base.html" %}
 
 {% block content %}
+    <br><br><br><br>
+    <div style="color: #070707; font-family: 'Oxygen', sans-serif; margin-left: 200px;">
+        <b><h1>Search Branches by City or by IFSC</h1></b>
+    </div>
 
-    <ul class="nav nav-tabs ">
+    <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a class="nav-link active " data-toggle="tab" href="#branches_tab"><strong>Branches</strong></a>
+            <a class="nav-link active " data-toggle="tab" href="#branches_tab">City</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link " data-toggle="tab" href="#ifsc_tab"><strong>IFSC</strong></a>
+            <a class="nav-link " data-toggle="tab" href="#ifsc_tab">IFSC</a>
         </li>
     </ul>
 
     <!-- Tab panes -->
     <div class="tab-content">
-        <div class="tab-pane fade in active " id="branches_tab">
+        <div class="tab-pane container active " id="branches_tab"><br>
 
             <div class="row">
-
                 <div class="col-md-6">
                     <label for="bank_name">Enter Bank name :</label>
                     <input type="text" class="form-control" id="bank_name">
                 </div>
-
             </div>
 
-            <div class="row">
+            <br>
 
+            <div class="row">
                 <div class="col-md-6">
                     <label for="city">Enter City :</label>
                     <input type="text" class="form-control" id="city">
                 </div>
-
             </div>
 
+            <br>
 
             <div class="row">
-
                 <div class="col-md-2">
-                    <button class="btn btn-outline-primary" id="get_all_branches">Find</button>
+                    <button class="btn btn-outline-primary" id="get_branches_by_city">Find</button>
                 </div>
-
             </div>
 
+            <br><br>
 
             <div class="row">
-
                 <div class="col-md-12">
-
-
-                    <ul class="list-group" id="all_branches_list">
-
+                    <ul class="list-group" id="branches_list">
                     </ul>
-
-
                 </div>
-
             </div>
-
-
         </div>
 
-
-        <div class="tab-pane fade" id="ifsc_tab">
-
+        <div class="tab-pane container fade" id="ifsc_tab"><br>
 
             <div class="row">
-
                 <div class="col-md-6">
                     <label for="ifsc_code_inp">Enter IFSC code :</label>
-                    <input type="text" class="form-control" id="ifsc_code_inp">
+                    <input type="text" class="form-control" id="ifsc_code_form_input">
                 </div>
-
             </div>
 
+            <br>
 
             <div class="row">
-
                 <div class="col-md-2">
-                    <button class="btn btn-outline-primary" id="get_branch_details">Get Branch Details</button>
+                    <button class="btn btn-outline-primary" id="get_branch_by_ifsc">Find</button>
                 </div>
-
             </div>
 
+            <br><br>
 
             <div class="row">
                 <div class="col-md-12">
@@ -91,12 +80,11 @@
                             <p class="card-text" id="data_detail">
                                 ....
                             </p>
-                            <a href="#" class="card-link">Open in Maps</a>
-                            <a href="#" class="card-link">Another link</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 {% endblock %}

@@ -1,134 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-        <!-- jQuery library -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <!-- Popper JS -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
-        <!-- Latest compiled JavaScript -->
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-        <!--jquery confirm library for alerts-->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
-        <link href="https://fonts.googleapis.com/css?family=Oxygen:400,300,700" rel="stylesheet" type='text/css'>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <!--jquery confirm library for alerts-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Oxygen:400,300,700" rel="stylesheet" type='text/css'>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
 
-        <title>Indian Bank Finder</title>
-    </head>
-    <body>
-        <nav class="navbar navbar-expand-md bg-info navbar-dark ">
-            <a class="navbar-brand" href="#">Indian Bank Finder</a>
+    <title>Indian Bank Finder</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-md bg-info navbar-dark ">
+    <a class="navbar-brand" href="#">Indian Bank Finder</a>
 
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
-            <div class="collapse navbar-collapse" id="collapsibleNavbar">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" data-toggle="modal" href="#modal_about">About</a>
-                    </li>
-                </ul>
+    <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+                <a class="nav-link" data-toggle="modal" href="#modal_about">About</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
+
+<div id="modal_about" class="modal fade">
+    <div class="modal-dialog  ">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title">About Indian Bank Finder</h4>
+                <button type="button" class="close" data-dismiss="modal">×</button>
             </div>
-        </nav>
 
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    {% block content %}
-                    {% endblock %}
-                </div>
+            <div class="modal-body">
+                This is a Web Application where you can search any of the Indian Bank's
+                branch either by entering the Bank's name and City's name<br>
+                or by entering the IFSC code.<br><br>
+                This project is made on Django REST framework<br>
+                and hosted on Heroku.
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
         </div>
+    </div>
+</div>
 
-        <div id="modal_about" class="modal fade">
-            <div class="modal-dialog  ">
-                <div class="modal-content">
+<script>
 
-                    <div class="modal-header">
-                        <h4 class="modal-title">About Indian Bank Finder</h4>
-                        <button type="button" class="close" data-dismiss="modal">×</button>
-                    </div>
-
-                    <div class="modal-body">
-                        This is a Web Application where you can search any of the Indian Bank's
-                        branch either by entering the Bank's name and City's name<br>
-                        or by entering the IFSC code.<br><br>
-                        This project is made on Django REST framework<br>
-                        and hosted on Heroku.
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <script>
-            $(document).ready(function () {
-                document.getElementById("response_card").hidden = true;
-                $("#get_branch_by_ifsc").click(function () {
-                    ifsc_code = document.getElementById("ifsc_code_form_input").value;
-                    var xhttp = new XMLHttpRequest();
-                    xhttp.onreadystatechange = function () {
-                        if (this.readyState == 4 && this.status == 200) {
-                            var res = JSON.parse(this.responseText);
-                            // $("#response_text").attr("href", "http://"+res['short_url']);
-                            document.getElementById("response_card").hidden = false;
-                            document.getElementById('data_title').innerHTML = res["bank"]["name"];
-                            branch_detail = "City : " + res["city"] + "<br>" + "District : " + res["district"] + "<br>"
-                            branch_detail = branch_detail + "State : " + res["state"] + "<br>" + "Address : " + res["address"] + "<br>"
-                            branch_detail = branch_detail + "Branch : " + res["branch"] + "<br>" + "IFSC Code: " + res["ifsc"] + "<br>"
-                            document.getElementById('data_detail').innerHTML = branch_detail;
-                        } else {
-                            document.getElementById("response_card").hidden = true;
-                            var res = JSON.parse(this.responseText);
-                            $.alert({
-                                title: 'Request could not be completed!',
-                                content: res['message'] + "<br> Response Status : " + this.status,
-                            });
-                        }
-                    };
-                    xhttp.open("GET", "/indianbank/branch/" + ifsc_code, false);
-                    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                    xhttp.send();
-                });
+    // Returns an HTTP request object
+    function getRequestObject() {
+        if (window.XMLHttpRequest) {
+            return (new XMLHttpRequest());
+        }
+        else if (window.ActiveXObject) {
+            // For very old IE browsers (optional)
+            return (new ActiveXObject("Microsoft.XMLHTTP"));
+        }
+        else {
+            global.alert("Ajax is not supported!");
+            return (null);
+        }
+    }
 
 
-                $("#get_branches_by_city").click(function () {
-                    city = document.getElementById("city").value;
-                    bank_name = document.getElementById("bank_name").value;
-                    var xhttp = new XMLHttpRequest();
-                    xhttp.onreadystatechange = function () {
-                        if (this.readyState == 4 && this.status == 200) {
-                            document.getElementById("branches_list").hidden = false;
-                            var res = JSON.parse(this.responseText);
-                            var response_html_content = "";
-                            $.each(res, function (i, v) {
-                                var bank_details = "Branch : " + v['branch'] + "<br>" + "IFSC Code : " + v['ifsc'] + "<br>";            //,, state
-                                bank_details = bank_details + "District : " + v['district'] + "<br>" + "Address : " + v['address'] + "<br>";
-                                var list_item = '<li class="list-group-item">' + bank_details + '</li>';
-                                response_html_content = response_html_content + list_item;
-                            });
-                            document.getElementById('branches_list').innerHTML = response_html_content;
-                        } else {
-                            document.getElementById("branches_list").hidden = true;
-                            var res = JSON.parse(this.responseText);
-                            $.alert({
-                                title: 'Request could not be completed!',
-                                content: res['message'] + "<br> Response Status : " + this.status,
-                            });
-                        }
-                    };
-                    var param_string = 'bank_name=' + bank_name + '&city=' + city;
-                    xhttp.open("GET", "/indianbank/branches/?" + param_string, false);
-                    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                    xhttp.send();
-                });
-            });
-        </script>
-    </body>
+    $(document).ready(function () {
+        document.getElementById("response_card").hidden = true;
+
+        //FOR SEARCHING WITH IFSC CODE
+        $("#get_branch_by_ifsc").click(function () {
+            ifsc_code = document.getElementById("ifsc_code_form_input").value;
+            var request = getRequestObject();
+            request.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var response = JSON.parse(this.responseText);
+                    console.log(response)
+                    document.getElementById("response_card").hidden = false;
+                    document.getElementById('data_title').innerHTML = response["bank"]["name"];
+                    branch_detail =
+                        "IFSC Code: " + response["ifsc"] + "<br>" +
+                        "Branch : " + response["branch"] + "<br>" +
+                        "City : " + response["city"] + "<br>" +
+                        "District : " + response["district"] + "<br>" +
+                        "State : " + response["state"] + "<br>" +
+                        "Address : " + response["address"] + "<br>"
+                    document.getElementById('data_detail').innerHTML = branch_detail;
+                } else {
+                    document.getElementById("response_card").hidden = true;
+                    var response = JSON.parse(this.responseText);
+                    $.alert({
+                        title: 'Request could not be completed!',
+                        content: response['error_message'] + "<br> Response Status : " + this.status,
+                    });
+                }
+            };
+            request.open("GET", "/indianbank/branch/" + ifsc_code, false);
+            request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            request.send();
+        });
+
+
+        //FOR SEARCHING WITH BANK'S AND CITY'S NAME
+        $("#get_branches_by_city").click(function () {
+            city = document.getElementById("city").value;
+            bank_name = document.getElementById("bank_name").value;
+            var request = getRequestObject();
+            request.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("branches_list").hidden = false;
+                    var response = JSON.parse(this.responseText);
+                    var bank_details_list = "";
+                    $.each(response, function (i, v) {
+                        var bank_detail =
+                            "IFSC Code : " + v['ifsc'] + "<br>" +
+                            "Branch : " + v['branch'] + "<br>" +
+                            "City : " + v['city'] + "<br>" +
+                            "District : " + v['district'] + "<br>" +
+                            "State : " + v['state'] + "<br>" +
+                            "Address : " + v['address'] + "<br>"
+                        var list_item = '<li class="list-group-item">' + bank_detail + '</li>';
+                        bank_details_list = bank_details_list + list_item;
+                    });
+                    document.getElementById('branches_list').innerHTML = bank_details_list;
+                } else {
+                    document.getElementById("branches_list").hidden = true;
+                    var response = JSON.parse(this.responseText);
+                    $.alert({
+                        title: 'Request could not be completed!',
+                        content: response['error_message'] + "<br> Response Status : " + this.status,
+                    });
+                }
+            };
+            var param_string = 'bank_name=' + bank_name + '&city=' + city;
+            request.open("GET", "/indianbank/branches/?" + param_string, false);
+            request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            request.send();
+        });
+    });
+</script>
+</body>
 </html>

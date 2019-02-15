@@ -115,7 +115,7 @@
                     });
                 }
             };
-            request.open("GET", "/indianbank/branch/" + ifsc_code, false);
+            request.open("GET", "/branch/" + ifsc_code, false);
             request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             request.send();
         });
@@ -153,7 +153,7 @@
                 }
             };
             var param_string = 'bank_name=' + bank_name + '&city=' + city;
-            request.open("GET", "/indianbank/branches/?" + param_string, false);
+            request.open("GET", "/branches/?" + param_string, false);
             request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             request.send();
         });

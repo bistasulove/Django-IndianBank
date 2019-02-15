@@ -18,6 +18,5 @@ from django.urls import path,include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('indianbank/',include('indianbankapp.urls')),
-    path('api-auth/',include('rest_framework.urls'))
+    path('',include('indianbankapp.urls')),
 ]

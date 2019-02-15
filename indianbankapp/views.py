@@ -7,12 +7,8 @@ from .models import Banks, Branches
 from .serializers import BanksSerializer, BranchesSerializer
 
 
-def apphome(request):
-
-    context = {}
-    context["title"] = " BankFinder"
-
-    return render(request, "indianbankapp/index.html", context)
+def index(request):
+    return render(request, "indianbankapp/index.html")
 
 
 class BranchIfscView(APIView):
@@ -31,14 +27,16 @@ class BranchCityView(APIView):
     def get(self, request):
 
         """ Finds all the branches of a Bank in a given City """
-        city = request.GET.get("city", None)
-        bank_name = request.GET.get("bank_name", None)
-
-        bank = Banks.objects.filter(name=bank_name.upper()).first()
-        if bank is None:
-            return Response({'error_message':"{} doesn't exists!".format(bank_name.upper())}, status=status.HTTP_404_NOT_FOUND)
-        branches = Branches.objects.filter(city=city.upper(), bank=bank_name.upper())
-        if len(branches) < 1:
-            return Response({'error_message':"There are no branches of {} in {}.".format(bank_name,city)}, status=status.HTTP_404_NOT_FOUND)
-        serializer = BranchesSerializer(branches, many=True).data
-        return Response(serializer)
+        city = request.GET.get("city", False)
+        bank_name = request.GET.get("bank_name", False)
+        if city and bank_name:
+            bank = Banks.objects.filter(name=bank_name.upper()).first()
+            if bank is None:
+                return Response({'error_message':"{} doesn't exists!".format(bank_name.upper())}, status=status.HTTP_404_NOT_FOUND)
+            branches = Branches.objects.filter(city=city.upper(), bank=bank_name.upper())
+            if len(branches) < 1:
+                return Response({'error_message':"There are no branches of {} in {}.".format(bank_name,city)}, status=status.HTTP_404_NOT_FOUND)
+            serializer = BranchesSerializer(branches, many=True).data
+            return Response(serializer)
+        else:
+            return Response({'error_message':"Please enter both Bank and City."},status=status.HTTP_404_NOT_FOUND)

@@ -19,4 +19,4 @@ class Branches(models.Model):
     state = models.CharField(max_length=30)
 
     def __str__(self):
-        return self.branch
+        return (self.bank+" - "+self.branch)

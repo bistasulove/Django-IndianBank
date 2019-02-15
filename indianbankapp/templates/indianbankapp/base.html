@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+    <!--jquery confirm library for alerts-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
+    <link rel="stylesheet" href="{% static 'indianbankapp/css/mystyle.css' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
+
+    <title>
+        {% if title %}
+            {{ title }}
+        {% else %}
+            Indian Bank Finder
+        {% endif %}
+    </title>
+
+
+</head>
+<body>
+
+<header>
+    <nav id="header-nav" class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <a href="#" class="pull-left visible-md visible-lg">
+                    <div class="logo-img"></div>
+                </a>
+                <div class="navbar-brand">
+                    <a href="#"><h1>Indian Bank Finder</h1></a>
+                    <p>
+                        <img src="{% static 'indianbankapp/images/smiley.png' %}" alt="Smiley">
+                        <span>Find Your Nearest Branch</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+
+            {% block content %}
+
+            {% endblock %}
+
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        document.getElementById("response_card").hidden = true;
+        $("#get_branch_details").click(function () {
+            ifsc_code = document.getElementById("ifsc_code_inp").value;
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var res = JSON.parse(this.responseText);
+                    // $("#response_text").attr("href", "http://"+res['short_url']);
+                    document.getElementById("response_card").hidden = false;
+                    document.getElementById('data_title').innerHTML = res["bank"]["name"];
+                    detail_str = "City : " + res["city"] + "<br>" + "District : " + res["district"] + "<br>"
+                    detail_str = detail_str + "State : " + res["state"] + "<br>" + "Address : " + res["address"] + "<br>"
+                    detail_str = detail_str + "Branch : " + res["branch"] + "<br>" + "IFSC Code: " + res["ifsc"] + "<br>"
+                    document.getElementById('data_detail').innerHTML = detail_str;
+                } else {
+                    document.getElementById("response_card").hidden = true;
+                    var res = JSON.parse(this.responseText);
+                    $.alert({
+                        title: 'Request could not be completed!',
+                        content: res['message'] + "<br> Response Status : " + this.status,
+                    });
+                }
+            };
+            // var parm='ifsc_code=' + long_url;
+            xhttp.open("GET", "/app/branch/" + ifsc_code, false);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send();
+        });
+
+
+        $("#get_all_branches").click(function () {
+            city = document.getElementById("city").value;
+            bank_name = document.getElementById("bank_name").value;
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("all_branches_list").hidden = false;
+                    var res = JSON.parse(this.responseText);
+                    var response_html_content = "";
+                    $.each(res, function (i, v) {
+                        //list += '<li class="page" id="'+i+'">' + '<a>' + v.name + '</a></li>'
+                        var item_details = "Branch : " + v['branch'] + "<br>" + "IFSC Code : " + v['ifsc'] + "<br>";            //,, state
+                        item_details = item_details + "District : " + v['district'] + "<br>" + "Address : " + v['address'] + "<br>";
+                        var list_item = '<li class="list-group-item">' + item_details + '</li>';
+                        response_html_content = response_html_content + list_item;
+                    });
+                    document.getElementById('all_branches_list').innerHTML = response_html_content;
+                } else {
+                    document.getElementById("all_branches_list").hidden = true;
+                    var res = JSON.parse(this.responseText);
+                    $.alert({
+                        title: 'Request could not be completed!',
+                        content: res['message'] + "<br> Response Status : " + this.status,
+                    });
+                }
+            };
+            var param_string = 'bank_name=' + bank_name + '&city=' + city;
+            xhttp.open("GET", "/app/branches/?" + param_string, false);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send();
+        });
+    });
+</script>
+</body>
+</html>

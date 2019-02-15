@@ -1,42 +1,60 @@
-from rest_framework import generics
-from rest_framework.decorators import api_view
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render
+
+from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.reverse import reverse
+from rest_framework.status import *
+
+import json
 from .models import Banks, Branches
 from .serializers import BanksSerializer, BranchesSerializer
-from rest_framework import permissions
 
 
-@api_view(['GET'])
-def api_root(request, format = None):
-    return Response({
-        'banks': reverse('bank-list',request=request, format=format),
-        'branches': reverse('branch-list', request=request, format=format)
-    })
+def apphome(request):
 
-class BankList(generics.ListCreateAPIView):
-    """List all the Banks or create new Bank"""
+    context = {}
+    context["title"] = " BankFinder"
 
-    queryset = Banks.objects.all()
-    serializer_class = BanksSerializer
+    return render(request, "indianbankapp/index.html", context)
 
 
+class BranchView(APIView):
 
-class BankDetail(generics.RetrieveUpdateDestroyAPIView):
-    """Retrieve, Update or Delete a Bank"""
+    def get(self, request, ifsc_code):
 
-    queryset = Banks.objects.all()
-    serializer_class = BanksSerializer
+        """ GET - get details of a brank branch by IFSC code"""
 
-class BranchList(generics.ListCreateAPIView):
-    """List all the branches or create new Branch"""
+        response_dict = {}
 
-    queryset = Branches.objects.all()
-    serializer_class = BranchesSerializer
+        branch = Branches.objects.filter(ifsc=ifsc_code).first()
+        if branch is None:
+            response_dict["message"] = "no branch with this ifsc code found"
+            return Response(response_dict, status=HTTP_404_NOT_FOUND)
+
+        branch_serialized = BranchesSerializer(branch).data
+        return Response(branch_serialized)
 
 
-class BranchDetail(generics.RetrieveUpdateDestroyAPIView):
-    """Retrieve, Update or Delete a Bank"""
+class BranchListView(APIView):
 
-    queryset = Branches.objects.all()
-    serializer_class = BranchesSerializer
+    def get(self, request):
+
+        """ GET - get all branches of a BANK in a CITY """
+
+        response_dict = {}
+        city = request.GET.get("city", None)
+        bank_name = request.GET.get("bank_name", None)
+
+        bank = Banks.objects.filter(name=bank_name.upper()).first()
+        if bank is None:
+            response_dict["message"] = "Bank with given bank_name does not exist"
+            return Response(response_dict, status=HTTP_422_UNPROCESSABLE_ENTITY)
+
+        branches = Branches.objects.filter(city=city.upper(), bank=bank)
+
+        if len(branches) < 1:
+            response_dict["message"] = "no branch of {} exists in {}".format(bank_name, city)
+            return Response(response_dict, status=HTTP_404_NOT_FOUND)
+
+        branches_serialized = BranchesSerializer(branches, many=True).data
+        return Response(branches_serialized)

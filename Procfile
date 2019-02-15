@@ -1,1 +1,1 @@
-web: gunicorn indianbankapp.wsgi--log-file -
+web: gunicorn indianbanks.wsgi--log-file -

@@ -8,6 +8,8 @@ urlpatterns = [
     path('', views.index, name="index"),
     path('branch/<str:ifsc_code>', views.BranchIfscView.as_view(), name="branch"),
     path('branches/', views.BranchCityView.as_view(), name="branches"),
+    path('getbankslist/', views.getbankslist, name="banklist"),
+    path('getcitylist/', views.getcitylist, name="citylist")
 
 ]
 

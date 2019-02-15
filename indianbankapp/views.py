@@ -1,8 +1,11 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.decorators import api_view
 
+import json
 from .models import Banks, Branches
 from .serializers import BanksSerializer, BranchesSerializer
 
@@ -43,3 +46,22 @@ class BranchCityView(APIView):
                                 status=status.HTTP_404_NOT_FOUND)
             serializer = BranchesSerializer(branches, many=True).data
             return Response(serializer)
+
+
+@api_view(["GET"])
+def getbankslist(request):
+    banks = Banks.objects.filter(name__icontains=request.GET.get("term", ""))[:10]
+    bank_name_list = []
+    for bank in banks:
+        bank_name_list.append(bank.name)
+    return HttpResponse(json.dumps(bank_name_list))
+
+
+@api_view(["GET"])
+def getcitylist(request):
+    branches = Branches.objects.filter(city__icontains=request.GET.get("term", ""))[:1]
+    branch_city_list = []
+    for branch in branches:
+        branch_city_list.append(branch.city)
+
+    return HttpResponse(json.dumps(branch_city_list))

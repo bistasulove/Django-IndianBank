@@ -31,10 +31,18 @@ class BranchCityView(APIView):
     def get(self, request):
 
         """ Finds all the branches of a Bank in a given City """
-        city = request.GET.get("city", None)
-        bank_name = request.GET.get("bank_name", None)
-        if city is None and bank_name is None:
+        city = request.GET.get("city", False)
+        bank_name = request.GET.get("bank_name", False)
+        if not city and not bank_name:
+            city="na"
+            bank_name = "na"
             return Response({'error_message': "Please enter both Bank and City."}, status=status.HTTP_404_NOT_FOUND)
+        elif not bank_name:
+            bank_name = "na"
+            return Response({'error_message':"Please enter Bank Name."}, status=status.HTTP_404_NOT_FOUND)
+        elif not city:
+            city = "na"
+            return Response({'error_message':"Please enter City Name."}, status=status.HTTP_404_NOT_FOUND)
         else:
             bank = Banks.objects.filter(name=bank_name.upper()).first()
             if bank is None:

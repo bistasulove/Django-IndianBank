@@ -33,27 +33,13 @@ class BranchCityView(APIView):
         """ Finds all the branches of a Bank in a given City """
         city = request.GET.get("city", False)
         bank_name = request.GET.get("bank_name", False)
-        if not city and not bank_name:
-            city="na"
-            bank_name = "na"
-            return Response({'error_message': "Please enter both Bank and City."}, status=status.HTTP_404_NOT_FOUND)
-        elif not bank_name:
-            bank_name = "na"
-            return Response({'error_message':"Please enter Bank Name."}, status=status.HTTP_404_NOT_FOUND)
-        elif not city:
-            city = "na"
-            return Response({'error_message':"Please enter City Name."}, status=status.HTTP_404_NOT_FOUND)
-        else:
-            bank = Banks.objects.filter(name=bank_name.upper()).first()
-            if bank is None:
-                return Response({'error_message': "{} doesn't exists!".format(bank_name.upper())},
-                                status=status.HTTP_404_NOT_FOUND)
-            branches = Branches.objects.filter(city=city.upper(), bank=bank)
-            if len(branches) < 1:
-                return Response({'error_message': "There are no branches of {} in {}.".format(bank_name, city)},
-                                status=status.HTTP_404_NOT_FOUND)
-            serializer = BranchesSerializer(branches, many=True).data
-            return Response(serializer)
+        bank = Banks.objects.filter(name=bank_name.upper()).first()
+        branches = Branches.objects.filter(city=city.upper(), bank=bank)
+        if len(branches) < 1:
+            return Response({'error_message': "NO RECORD EXISTS!"},
+                            status=status.HTTP_404_NOT_FOUND)
+        serializer = BranchesSerializer(branches, many=True).data
+        return Response(serializer)
 
 
 @api_view(["GET"])

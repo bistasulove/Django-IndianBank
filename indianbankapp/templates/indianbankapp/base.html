@@ -92,11 +92,11 @@
         $("#bank_name").keyup(function () {
             $("#bank_name").autocomplete({
                 source: "/getbankslist",
-                minLength: 1,
+                minLength: 1
             });
             $("#city").autocomplete({
                 source: "/getcitylist",
-                minLength: 2,
+                minLength: 2
             });
         });
 
@@ -109,7 +109,7 @@
             request.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                     var response = JSON.parse(this.responseText);
-                    console.log(response)
+                    console.log(response);
                     document.getElementById("response_card").hidden = false;
                     document.getElementById('data_title').innerHTML = response["bank"]["name"];
                     branch_detail =
@@ -118,17 +118,21 @@
                         "City : " + response["city"] + "<br>" +
                         "District : " + response["district"] + "<br>" +
                         "State : " + response["state"] + "<br>" +
-                        "Address : " + response["address"] + "<br>"
+                        "Address : " + response["address"] + "<br>";
                     document.getElementById('data_detail').innerHTML = branch_detail;
                 } else {
                     document.getElementById("response_card").hidden = true;
                     var response = JSON.parse(this.responseText);
 
-                    $.noConflict();
-                    $.alert({
-                        title: 'Request could not be completed!',
-                        content: response['error_message'] + "<br> Response Status : " + this.status,
-                    });
+                    try {
+                        $.noConflict();
+                        $.alert({
+                            title: 'Request could not be completed!',
+                            content: response['error_message'] + "<br> Response Status : " + this.status
+                        });
+                    } catch (err) {
+                        console.log(err);
+                    }
                 }
             };
             request.open("GET", "/branch/" + ifsc_code, false);
@@ -154,7 +158,7 @@
                             "City : " + v['city'] + "<br>" +
                             "District : " + v['district'] + "<br>" +
                             "State : " + v['state'] + "<br>" +
-                            "Address : " + v['address'] + "<br>"
+                            "Address : " + v['address'] + "<br>";
                         var list_item = '<li class="list-group-item">' + bank_detail + '</li>';
                         bank_details_list = bank_details_list + list_item;
                     });
@@ -162,12 +166,16 @@
                 } else {
                     document.getElementById("branches_list").hidden = true;
                     var response = JSON.parse(this.responseText);
+                    try {
+                        $.noConflict();
+                        $.alert({
+                            title: 'Request could not be completed!',
+                            content: response['error_message'] + "<br> Response Status : " + this.status
+                        });
+                    } catch (err) {
+                        console.log(err);
+                    }
 
-                    $.noConflict();
-                    $.alert({
-                        title: 'Request could not be completed!',
-                        content: response['error_message'] + "<br> Response Status : " + this.status,
-                    });
                 }
             };
             var param_string = 'bank_name=' + bank_name + '&city=' + city;

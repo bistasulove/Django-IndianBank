@@ -108,8 +108,15 @@
             var request = getRequestObject();
             request.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("response_card").hidden = false;
                     var response = JSON.parse(this.responseText);
-                    console.log(response);
+                    if (response["ifsc"].length == 0) {
+
+                        document.getElementById("data_detail").style.color = "red";
+                        document.getElementById("data_detail").innerHTML = "INVALID INPUT";
+                        document.getElementById("data_title").innerHTML = "";
+                        return;
+                    }
                     document.getElementById("response_card").hidden = false;
                     document.getElementById('data_title').innerHTML = response["bank"]["name"];
                     branch_detail =
@@ -119,20 +126,11 @@
                         "District : " + response["district"] + "<br>" +
                         "State : " + response["state"] + "<br>" +
                         "Address : " + response["address"] + "<br>";
+                    document.getElementById("data_detail").style.color = "black";
                     document.getElementById('data_detail').innerHTML = branch_detail;
                 } else {
                     document.getElementById("response_card").hidden = true;
                     var response = JSON.parse(this.responseText);
-
-                    try {
-                        $.noConflict();
-                        $.alert({
-                            title: 'Request could not be completed!',
-                            content: response['error_message'] + "<br> Response Status : " + this.status
-                        });
-                    } catch (err) {
-                        console.log(err);
-                    }
                 }
             };
             request.open("GET", "/branch/" + ifsc_code, false);
@@ -150,6 +148,11 @@
                 if (this.readyState == 4 && this.status == 200) {
                     document.getElementById("branches_list").hidden = false;
                     var response = JSON.parse(this.responseText);
+                    if (Object.entries(response).length == 0) {
+                        document.getElementById("branches_list").style.color = "red";
+                        document.getElementById("branches_list").innerHTML = "INVALID INPUT";
+                        return;
+                    }
                     var bank_details_list = "";
                     $.each(response, function (i, v) {
                         var bank_detail =
@@ -162,20 +165,11 @@
                         var list_item = '<li class="list-group-item">' + bank_detail + '</li>';
                         bank_details_list = bank_details_list + list_item;
                     });
+                    document.getElementById("branches_list").style.color = "black";
                     document.getElementById('branches_list').innerHTML = bank_details_list;
                 } else {
                     document.getElementById("branches_list").hidden = true;
                     var response = JSON.parse(this.responseText);
-                    try {
-                        $.noConflict();
-                        $.alert({
-                            title: 'Request could not be completed!',
-                            content: response['error_message'] + "<br> Response Status : " + this.status
-                        });
-                    } catch (err) {
-                        console.log(err);
-                    }
-
                 }
             };
             var param_string = 'bank_name=' + bank_name + '&city=' + city;

@@ -20,8 +20,7 @@ class BranchIfscView(APIView):
         """ Finds the Bank's branch by IFSC code"""
         branch = Branches.objects.filter(ifsc=ifsc_code.upper()).first()
         if branch is None:
-            return Response({'error_message': "Sorry. No Branch with such IFSC code exists."},
-                            status=status.HTTP_404_NOT_FOUND)
+            pass
         serializer = BranchesSerializer(branch).data
         return Response(serializer)
 
@@ -31,13 +30,12 @@ class BranchCityView(APIView):
     def get(self, request):
 
         """ Finds all the branches of a Bank in a given City """
-        city = request.GET.get("city", False)
-        bank_name = request.GET.get("bank_name", False)
+        city = request.GET.get("city")
+        bank_name = request.GET.get("bank_name")
         bank = Banks.objects.filter(name=bank_name.upper()).first()
         branches = Branches.objects.filter(city=city.upper(), bank=bank)
         if len(branches) < 1:
-            return Response({'error_message': "NO RECORD EXISTS!"},
-                            status=status.HTTP_404_NOT_FOUND)
+            pass
         serializer = BranchesSerializer(branches, many=True).data
         return Response(serializer)
 
